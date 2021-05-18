@@ -1,0 +1,23 @@
+
+ion-content {
+    --background:  rgb(255, 212, 131);
+    position: relative;
+ 
+  margin: 0 auto;
+  margin-top: 0 auto;
+  margin-left: 0 auto;
+  display:flex;
+justify-content:center !important;
+align-content:center !important;
+  }
+
+  ion-grid,
+  ion-row {
+      margin-top: var(--ion-margin, 16px);
+  }
+
+  ion-card {
+      ion-item:not(:last-child) {
+          border-bottom: 1px solid var(--ion-color-medium);
+      }
+  }

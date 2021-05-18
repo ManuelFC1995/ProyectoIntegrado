@@ -1,0 +1,16 @@
+i{
+    
+    margin-left: 69%;
+    position: relative;
+  }
+  
+  i:before {
+  position: relative;
+  top: 50%;
+      transform: translateX(-30%);
+      display: block;
+      align-items: flex-end;
+  }
+  ion-toolbar {
+    --background:#ffbf47 ;
+  }

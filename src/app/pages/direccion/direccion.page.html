@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Datos de envio</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref=""    (click)="atras()"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <form [formGroup]="tasks1">
+  
+    <ion-select (ionChange)="this.change1()" style="margin-left: 5px;margin-right: 5px;width: 100%;height: 75px;" formControlName="CA" interface="action-sheet" okText="Okay"
+      cancelText="Cancelar" placeholder="Región" autocapitalize="true" auto-grow="true"
+      >
+      <ion-item *ngFor="let item of this.Regiones" style="">
+      <ion-select-option  value={{item}}>{{item}}</ion-select-option>
+    </ion-item>
+    </ion-select>
+ 
+  </form>
+
+  
+  <form [formGroup]="tasks2">
+  
+    <ion-select (ionChange)="this.change2()" style="margin-left: 5px;margin-right: 5px;height: 75px;" formControlName="Provincia" interface="action-sheet" okText="Okay"
+      cancelText="Cancelar" placeholder="Provincia" autocapitalize="true" auto-grow="true"
+      >
+      <ion-item *ngFor="let item of this.Localidades" >
+      <ion-select-option  value={{item.name}}>{{item.name}}</ion-select-option>
+    </ion-item>
+    </ion-select>
+ 
+  </form>
+
+
+  <form [formGroup]="tasks" (ngSubmit)="this.sendForm()">
+  
+    
+    
+  
+    <ion-item style="margin-top: 15px;margin-left: 10px;margin-right: 10px;">
+      <ion-label></ion-label>
+      <ion-textarea style="margin-top: 10px;"
+      formControlName="Calle"
+      placeholder="Calle/Vía *"
+      autocapitalize="true"
+      auto-grow="true"></ion-textarea>
+    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item style="margin-top: 15px;">
+            <ion-label></ion-label>
+            <ion-textarea 
+            formControlName="CP"
+            placeholder="{{this.Localidad.CP}}"
+            autocapitalize="true"
+            auto-grow="true"></ion-textarea>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item style="margin-top: 15px;">
+            <ion-label></ion-label>
+            <ion-textarea 
+            formControlName="numero"
+            placeholder="Nº *"
+            autocapitalize="true"
+            auto-grow="true"></ion-textarea>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item style="margin-top: 15px;">
+            <ion-label></ion-label>
+            <ion-textarea 
+            formControlName="puerta"
+            placeholder="Puerta"
+            autocapitalize="true"
+            auto-grow="true"></ion-textarea>
+          </ion-item>
+        </ion-col>
+       
+      </ion-row>
+    </ion-grid>
+    <ion-item style="margin-top: 15px;margin-left: 10px;margin-right: 10px;">
+      <ion-label></ion-label>
+      <ion-textarea 
+      formControlName="Teléfono"
+      placeholder="+34"
+      autocapitalize="true"
+      auto-grow="true"></ion-textarea>
+    </ion-item>
+<div style="text-align: center;">
+    <ion-button style="margin-top: 22px;height: 50px;width: 200px;"
+    shape="round"
+    color="primary"
+    fill="outline"
+    type="submit"
+    [disabled]="!tasks.valid">Ir a pagos</ion-button>
+  </div>
+  </form>
+</ion-content>
