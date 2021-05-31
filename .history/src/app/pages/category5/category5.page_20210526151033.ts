@@ -15,7 +15,7 @@ import { LoadingService } from 'src/app/Services/loading.service';
   styleUrls: ['./category5.page.scss'],
 })
 export class Category5Page implements OnInit {
-//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA DECORACION GAMING________
+
   private segmentModel ="list";
   private orden;
   public listado: Array<Producto> ;
@@ -59,26 +59,21 @@ export class Category5Page implements OnInit {
   async ngOnInit() {
     this.tasksfiltro = this.formBuilder.group({
 
+
       orden: [''],
+      
+       
+ 
      })
       this.isAuth=this.auth.isAuthenticated();
     this.carga();
   }
-
-
   private doRefresh(event) {
     setTimeout(async () => {
    this.carga();
       event.target.complete();
     }, 500);
   }
-
-
-    /**
-* Metodo que carga los productos de la lista
-
-* @param  orden Filtro para la lista
-*/
   public async carga(){
     this.orden=  this.tasksfiltro.get('orden').value;
     this.listadoConFoto= [] ;
@@ -142,9 +137,13 @@ export class Category5Page implements OnInit {
     }
     this.loadingCtrl.Dismiss();
   }
+  private toastCarrito(){
+    this.loadingCtrl.presentToastSinColor("Debes iniciar sesion para habilitar las opciones de compra");
+  }
+  private ionViewDidEnter(){
 
-
-
+    
+  }
   private segmentChanged(ev?: any){
     ev = ev?ev:{detail: {value: 'orden'}};
     if(ev.detail.value == 'list' ){
@@ -154,12 +153,6 @@ export class Category5Page implements OnInit {
     }
   }
 
-
-
-    /**
-* Metodo que compara los productos por precio 
-
-*/
   private comparePrice1(a:Producto, b:Producto) {
     if (a.precio>=b.precio) {
       return -1;
@@ -171,17 +164,6 @@ export class Category5Page implements OnInit {
     return 0;
   }
 
-  
-  ToastCarrito(){
-    this.loadingCtrl.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
-  }
-
-
-
-    /**
-* Metodo que compara los productos por precio 
-
-*/
   private comparePrice2(a:Producto, b:Producto) {
     if (a.precio<=b.precio) {
       return -1;

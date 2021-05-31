@@ -10,38 +10,40 @@ import { AuthService } from 'src/app/Services/auth.service';
 import { LoadingService } from 'src/app/Services/loading.service';
 
 @Component({
-  selector: 'app-category5',
-  templateUrl: './category5.page.html',
-  styleUrls: ['./category5.page.scss'],
+  selector: 'app-category4',
+  templateUrl: './category4.page.html',
+  styleUrls: ['./category4.page.scss'],
 })
-export class Category5Page implements OnInit {
-//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA DECORACION GAMING________
-  private segmentModel ="list";
-  private orden;
+
+
+//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA SONIDO_______
+export class Category4Page implements OnInit {
+  segmentModel ="list";
+  orden;
   public listado: Array<Producto> ;
   public listadoConFoto: Array<Producto> = [] ;
   private category:string=null;
   public tasks:FormGroup;
-  private ios: boolean;
-  private dayIndex = 0;
-  private queryText = '';
-  private segment = 'all';
-  private excludeTracks: any = [];
-  private shownSessions: any = [];
-  private groups: any = [];
-  private confDate: string;
-  private showSearchbar: boolean;
-  private textoBuscar='';
-  private p:Producto[];
-  private nProductosCart=0;
-  private cart: cart| null = {
+  ios: boolean;
+  dayIndex = 0;
+  queryText = '';
+  segment = 'all';
+  excludeTracks: any = [];
+  shownSessions: any = [];
+  groups: any = [];
+  confDate: string;
+  showSearchbar: boolean;
+  textoBuscar='';
+  p:Producto[];
+  nProductosCart=0;
+  cart: cart| null = {
     id_cliente: undefined,
     productos:undefined
     
   };
   public tasksfiltro: FormGroup;
   public isAuth:boolean=false;
-  private ProductosCarrito:Producto[];
+  ProductosCarrito:Producto[];
   constructor( public alertCtrl: AlertController,
     public loadingCtrl: LoadingService,
     public LOadingCTR: LoadingController,
@@ -60,13 +62,16 @@ export class Category5Page implements OnInit {
     this.tasksfiltro = this.formBuilder.group({
 
       orden: [''],
+ 
      })
+
       this.isAuth=this.auth.isAuthenticated();
     this.carga();
   }
 
 
-  private doRefresh(event) {
+
+  doRefresh(event) {
     setTimeout(async () => {
    this.carga();
       event.target.complete();
@@ -74,7 +79,8 @@ export class Category5Page implements OnInit {
   }
 
 
-    /**
+
+  /**
 * Metodo que carga los productos de la lista
 
 * @param  orden Filtro para la lista
@@ -82,14 +88,13 @@ export class Category5Page implements OnInit {
   public async carga(){
     this.orden=  this.tasksfiltro.get('orden').value;
     this.listadoConFoto= [] ;
-    
-    this.loadingCtrl.presentLoading();
+
       this.listado=await this.apiS.getProductall();
       console.log(this.p);
       this.listado.forEach((data)=>{
-        if(data.categoria=="Décoracíon"){
+        if(data.categoria=="Sónido"){
           if(data.imagene1==null){
-           
+
           }else{
            data.imagene1='data:image/jpeg;base64,'+data.imagene1;
            console.log(data);
@@ -97,6 +102,7 @@ export class Category5Page implements OnInit {
           }
           if(data.imagene2==null){
            
+          
           }else{
            data.imagene2='data:image/jpeg;base64,'+data.imagene2;
            console.log(data);
@@ -104,6 +110,7 @@ export class Category5Page implements OnInit {
           }
           if(data.imagene3==null){
           
+         
           }else{
            data.imagene3='data:image/jpeg;base64,'+data.imagene3;
            console.log(data);
@@ -140,12 +147,11 @@ export class Category5Page implements OnInit {
       console.log("no hay usuario");
       this.nProductosCart=0;
     }
-    this.loadingCtrl.Dismiss();
+  
   }
 
 
-
-  private segmentChanged(ev?: any){
+  segmentChanged(ev?: any){
     ev = ev?ev:{detail: {value: 'orden'}};
     if(ev.detail.value == 'list' ){
    this.orden="list";
@@ -154,13 +160,11 @@ export class Category5Page implements OnInit {
     }
   }
 
-
-
-    /**
+  /**
 * Metodo que compara los productos por precio 
 
 */
-  private comparePrice1(a:Producto, b:Producto) {
+  comparePrice1(a:Producto, b:Producto) {
     if (a.precio>=b.precio) {
       return -1;
     }
@@ -171,27 +175,23 @@ export class Category5Page implements OnInit {
     return 0;
   }
 
-  
+
+    /**
+* Metodo que compara los productos por precio 
+
+*/
+  comparePrice2(a:Producto, b:Producto) {
+    if (a.precio<=b.precio) {
+      return -1;
+    }
+    if (a.precio>=b.precio) {
+      return 1;
+    }
+    // a debe ser igual b
+    return 0;
+  }
+
   ToastCarrito(){
     this.loadingCtrl.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
-
-
-
-    /**
-* Metodo que compara los productos por precio 
-
-*/
-  private comparePrice2(a:Producto, b:Producto) {
-    if (a.precio<=b.precio) {
-      return -1;
-    }
-    if (a.precio>=b.precio) {
-      return 1;
-    }
-    // a debe ser igual b
-    return 0;
-  }
 }
-
-

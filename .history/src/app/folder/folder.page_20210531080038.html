@@ -1,0 +1,255 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button style="color: black;"></ion-menu-button>
+      
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ng-container *ngIf="this.isAuth">
+        <ion-button style="width: 56px;" [routerLink]="[ '../../cart' ]" routerDirection="root"  routerLinkActive="selected">
+          <ion-icon slot="icon-only" name="cart"></ion-icon>
+          <span style="color: rgb(235, 111, 53); font-size: x-small;margin-bottom: 15px;background-color: rgb(253, 214, 155);background-size: 0.5px;" class="badge badge-light">{{this.nProductosCart}}</span>
+        </ion-button>   
+    </ng-container>  
+    <ng-container *ngIf="!this.isAuth">
+      <ion-button style="width: 56px;" [routerLink]="[ '../../login' ]" routerDirection="root"  routerLinkActive="selected">
+        <ion-icon slot="icon-only" name="cart"></ion-icon>
+        <span style="color: rgb(0, 0, 0); font-size: x-small;margin-bottom: 15px;background-color: rgb(253, 214, 155);background-size: 0.5px;" class="badge badge-light"></span>
+      </ion-button>   
+  </ng-container>  
+      
+    </ion-buttons>
+    <ion-title>{{ foldername }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ folder }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+
+<!--    HOME -->
+  <ng-container *ngIf="folder === 'Inbox'">
+    <ion-refresher slot="fixed" style="--ion-text-color: var(--ion-color-medium);" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content pullingIcon="arrow-down-outline"></ion-refresher-content>
+    </ion-refresher>
+    <ion-img style="width: 380px;" [src]="imagenshop"></ion-img>
+   <h3 style="text-align: center;margin-left: 5px;margin-right: 5px;"> Nuestros artículos de hogar</h3> 
+    <ion-slides pager="true"  [options]="slideOpts1">
+ 
+      <ion-slide   >
+        <div class="ion-no-padding" style="width: 500px;height: 285px;">
+     
+            <ion-img (click)="GotoCategory1()" expand="full"[src]="homecategory1"  style="margin-top: 3px;margin-bottom: 1px; height: 250px;" fill="outline"></ion-img>
+            <h2 style="margin-top: 2px;margin-bottom: 5px;" >Toallas y Albornoces</h2>
+           
+           
+          
+        
+        </div>
+  
+      </ion-slide>
+      <ion-slide   >
+        <div class="ion-no-padding" style="width: 500px;height: 285px;" >
+        
+            <ion-img (click)="GotoCategory2()"  expand="full" [src]="homecategory2"  style="margin-top: 1px;margin-bottom: 1px;height: 250px;"  fill="outline"></ion-img>
+            <h2 style="margin-top: 2px;margin-bottom: 5px;"  >Decoración de interior</h2 >
+           
+           
+          
+        
+        </div>
+  
+      </ion-slide>
+      <ion-slide   >
+        <div class="ion-no-padding" style="width: 500px;height: 285px;" >
+         
+            <ion-img (click)="GotoCategory3()"  expand="full" [src]="homecategory3"  style="margin-top: 1px;margin-bottom: 1px;height: 250px;"  fill="outline"></ion-img>
+            <h2 style="margin-top: 2px;margin-bottom: 5px;" >Cojines y almohadas</h2>
+           
+           
+          
+         
+        </div>
+  
+      </ion-slide>
+   
+      <ion-slide   >
+        <div class="ion-no-padding" style="width: 500px;height: 285px;">
+        
+            <ion-img (click)="GotoCategory4()"  expand="full" [src]="homecategory4"  style="margin-top: 1px;margin-bottom: 1px;height: 250px;"  fill="outline"></ion-img>
+            <h2 style="margin-top: 2px;margin-bottom: 5px;"  >Decoración de exterior</h2>
+           
+           
+          
+         
+        </div>
+  
+      </ion-slide>
+    
+  </ion-slides>
+
+
+
+  <ion-img style="width: 380px;" [src]="imagenmv"></ion-img>
+ 
+<h3 style="text-align: center;">Ultimos productos añadidos</h3>
+    <ion-slides pager="true"  [options]="slideOpts1" style="margin-bottom: 20px;">
+ 
+      <ion-slide *ngFor="let item of listadoConFoto"  >
+        <div class="ion-no-padding" style="width: 500px;height: 355px;">
+            <ion-img  expand="full"   *ngIf="item.imagene1" [src]="item.imagene1"  style=" margin-top: 3px;margin-bottom: 7px; height: 250px;"></ion-img>
+            <h3  routerDirection="forward" routerLink="/producto/{{item.id}}" >{{item.name}}</h3>
+            <p style="color: rgb(78, 78, 78);margin-top:16px;" >{{item.precio}} EUR</p>
+            <ion-button size="small" style="margin-bottom: 20px;"  fill="clear"> <ion-icon slot="icon-only" name="heart-outline"></ion-icon> </ion-button>
+        </div>
+          
+     
+      
+  
+      </ion-slide>
+    
+  
+  </ion-slides>
+<br><br><br><br><br>
+  </ng-container>
+
+
+
+<!--    Categorias    -->
+    <ng-container *ngIf="folder === 'Outbox'">
+ 
+      <ion-img (click)="GotoCategory1()" expand="full"[src]="category1"  style="margin-top: 3px;margin-bottom: 1px;" fill="outline"></ion-img>
+      <ion-img (click)="GotoCategory2()"  expand="full" [src]="category2"  style="margin-top: 1px;margin-bottom: 1px;"  fill="outline"></ion-img>
+      <ion-img (click)="GotoCategory3()"  expand="full" [src]="category3"  style="margin-top: 1px;margin-bottom: 1px;"  fill="outline"></ion-img>
+      <ion-img (click)="GotoCategory4()"  expand="full" [src]="category4"  style="margin-top: 1px;margin-bottom: 1px;"  fill="outline"></ion-img>
+      <ion-img expand="full" style="margin-top: 1px;margin-bottom: 1px;"  fill="outline"></ion-img>
+   
+  </ng-container>
+
+
+<!--    Perfil    -->
+<div >
+  <ng-container    *ngIf="folder === 'Favorites'">
+   
+   
+    <ng-container *ngIf="isAuth">
+  <div style="background-color: rgb(255, 200, 80);margin-top: 0px;margin-bottom: 0px;height: 600px;">
+      <ion-list>
+        <ion-item>
+          <ion-label>Mis pedidos</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Información de usuario</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>Métodos de pago</ion-label>
+        </ion-item>
+        <ion-item >
+          <ion-button style="color: black;" (click)="this.Logaut()" >Cerrar Sesión</ion-button>
+        </ion-item>
+ 
+      </ion-list>
+    </div>
+    </ng-container >
+    <ng-container  *ngIf="!isAuth">
+  <br><br>
+      <ion-grid    > 
+    
+        <ion-row  class="ion-justify-content-center">
+          <ion-col class="ion-text-center" size-md="6" size-lg="5" size-xs="12">
+            <form  [formGroup]="login" (ngSubmit)="onSubmit()">
+              <br>
+             
+            
+    
+    
+              <ion-card style="text-align: center; margin-bottom: 30px;" clear color= "secondary" class="auth-card ion-margin">
+                <ion-item lines="none" color="medium">
+                  <ion-input type="email" id="inputEmail" placeholder="Email" formControlName="email" required autofocus></ion-input>
+                </ion-item>
+                
+                <ion-item lines="none" color="medium" class="ion-no-inner-padding-end">
+                  <ion-input type="password" id="inputPassword" placeholder="Password" formControlName="password"  required></ion-input>
+                  <ion-button slot="end" fill="clear" class="ion-no-margin" [routerLink]="[ '/auth', 'forgot' ]"
+                    routerDirection="forward">
+                    <ion-icon slot="icon-only" color="medium" name="help-circle-outline"></ion-icon>
+                  </ion-button>
+                </ion-item>
+              </ion-card>
+              <br>  
+              <ion-button style="text-align: center;" clear color="secondary" expand="block" class="ion-margin-start ion-margin-end ion-margin-bottom" type="submit"
+               >
+                Log In
+              </ion-button>
+              <span class="ion-margin"></span>
+              <ion-text style="color: aliceblue;">or</ion-text>
+              <span class="ion-margin"></span>
+              <ion-button  clear color="warning" expand="block" class="ion-margin" [routerLink]="[  '../../register' ]"
+                routerDirection="forward"
+                >
+                Sign Up
+              </ion-button>
+          
+  
+   
+            </form>
+            <p class="alert alert-danger" *ngIf="mensaje">
+              El usuario o contraseña no es correcto
+              </p>
+          
+            
+         
+         
+            <ion-grid>
+              <ion-row  style="margin-top: 20px;align-items: center;margin-left: 81px;"  class="ion-align-items-middle">
+                <ion-col style="text-align: center;" size="4">
+                
+                  <ion-button  style="color: rgb(0, 0, 0);" clear color="primary"  expand="full" (click)="this.loginGoogle()"> <img [src]="GoogleLogo" >   </ion-button>
+                
+                </ion-col >
+  
+  
+                <ion-col style="text-align: center;" size="4">
+                  <ion-button  clear color=" --ion-color-facebook" style="color: rgb(0, 0, 0);" clear color="primary" expand="full" >
+                    <img [src]="FacebookLogo" > </ion-button>
+                
+                </ion-col >
+              </ion-row>
+            </ion-grid>
+   <br>     
+            <div style="text-align: center; color: black;">
+            <ion-button  clear color="tertiary" style="padding-top: 0px;" > <img [src]="GooglePlay" >Consiguela en la <br> APP STORE</ion-button>
+          </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+<br><br>
+  </ng-container>
+
+</div>
+<!--    Mis deseos   -->
+  <ng-container *ngIf="folder === 'Archived'">
+  
+    <p>Deseos</p>
+   
+  </ng-container>
+
+
+
+
+  <ng-container *ngIf="folder === 'Spam'">
+  
+ 
+   
+  </ng-container>
+
+
+
+
+</ion-content>

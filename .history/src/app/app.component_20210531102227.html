@@ -1,0 +1,35 @@
+<ion-app>
+  <ion-split-pane  style="background-color: rgb(255, 255, 255);" contentId="main-content">
+    
+    <ion-menu  contentId="main-content" type="overlay">
+      <ion-content >
+        <ion-list id="inbox-list">
+          <ion-list-header> <ion-img  expand="full" [src]="imagenLogo"  style="margin-top: 1px;margin-bottom: 1px;"  fill="outline"></ion-img></ion-list-header>
+          <ion-note></ion-note>
+
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+              <ion-icon style="color: black;" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+           
+          </ion-menu-toggle>
+          <ion-item  *ngIf="isAuth"routerDirection="root"  lines="none" detail="false" routerLinkActive="selected">
+            <ion-icon slot="start" ></ion-icon>
+           
+          </ion-item>
+      
+        </ion-list>
+        <ion-menu-toggle auto-hide="false">
+    
+    
+
+</ion-menu-toggle>
+
+      </ion-content>
+      
+    </ion-menu>
+    
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

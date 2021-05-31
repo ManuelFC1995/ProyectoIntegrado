@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+   
+
+  <ion-buttons slot="start">
+    <ion-back-button   [icon]="home" defaultHref="" [routerLink]="[  '../' ]"></ion-back-button>
+  </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+
+  <ion-content   class="auth-page"  >
+    <ion-grid    > 
+    
+      <ion-row  class="ion-justify-content-center">
+        <ion-col class="ion-text-center" size-md="6" size-lg="5" size-xs="12">
+          <form  [formGroup]="login" (ngSubmit)="onSubmit()">
+            <br>
+           
+          
+  
+  
+            <ion-card style="text-align: center;color: black; margin-bottom: 20px;" clear color= "secondary" class="auth-card ion-margin">
+              <ion-item style="color: black;" lines="none" color="medium">
+                <ion-input  style="color: black;" type="email" id="inputEmail" placeholder="Email" formControlName="email" required autofocus></ion-input>
+              </ion-item>
+              
+              <ion-item style="color: black;" lines="none" color="medium" class="ion-no-inner-padding-end">
+                <ion-input   style="color: black;" type="password" id="inputPassword" placeholder="Password" formControlName="password"  required></ion-input>
+                <ion-button slot="end" fill="clear" class="ion-no-margin" [routerLink]="[ '/auth', 'forgot' ]"
+                  routerDirection="forward">
+                  <ion-icon slot="icon-only" color="medium" name="help-circle-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-card>
+            <br>  
+            <ion-button style="text-align: center;" clear color="secondary" expand="block" class="ion-margin-start ion-margin-end ion-margin-bottom" type="submit"
+             >
+              Log In
+            </ion-button>
+            <span class="ion-margin"></span>
+            <ion-text style="color: aliceblue;">or</ion-text>
+            <span class="ion-margin"></span>
+            <ion-button  clear color="warning" expand="block" class="ion-margin" [routerLink]="[  '../register' ]"
+              routerDirection="forward"
+              >
+              Sign Up
+            </ion-button>
+        
+
+ 
+          </form>
+          <p class="alert alert-danger" *ngIf="mensaje">
+            El usuario o contraseña no es correcto
+            </p>
+        
+          
+       
+       
+            <p class="light-gray">
+              -- OR LOGIN WITH --
+            </p>
+            <br>
+            <ion-button (click)="this.loginGoogle()"  color="danger"  shape="round">
+              Google
+              <ion-icon slot="end" name="logo-google"></ion-icon>
+            </ion-button>
+      <br>    <br>   <br>  
+          <div style="text-align: center; color: black;">
+          <ion-button  clear color="dark" style="padding-top: 0px;height: 60px;" > <img [src]="GooglePlay" >Consiguela en la <br> APP STORE</ion-button>
+        </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>

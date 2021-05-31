@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
-import { AlertController, Config, IonRouterOutlet, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, Config, IonList, IonRouterOutlet, LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { cart } from 'src/app/model/cart';
 import { Producto } from 'src/app/model/Producto';
 import { ApiService } from 'src/app/Services/api.service';
@@ -10,38 +10,42 @@ import { AuthService } from 'src/app/Services/auth.service';
 import { LoadingService } from 'src/app/Services/loading.service';
 
 @Component({
-  selector: 'app-category5',
-  templateUrl: './category5.page.html',
-  styleUrls: ['./category5.page.scss'],
+  selector: 'app-category1',
+  templateUrl: './category1.page.html',
+  styleUrls: ['./category1.page.scss'],
 })
-export class Category5Page implements OnInit {
-//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA DECORACION GAMING________
-  private segmentModel ="list";
-  private orden;
+export class Category1Page implements OnInit {
   public listado: Array<Producto> ;
   public listadoConFoto: Array<Producto> = [] ;
   private category:string=null;
+  private orden:string='';
+
   public tasks:FormGroup;
-  private ios: boolean;
-  private dayIndex = 0;
-  private queryText = '';
-  private segment = 'all';
-  private excludeTracks: any = [];
-  private shownSessions: any = [];
-  private groups: any = [];
-  private confDate: string;
-  private showSearchbar: boolean;
-  private textoBuscar='';
-  private p:Producto[];
-  private nProductosCart=0;
-  private cart: cart| null = {
+ 
+  ios: boolean;
+  dayIndex = 0;
+  queryText = '';
+  segment = 'all';
+  excludeTracks: any = [];
+  shownSessions: any = [];
+  groups: any = [];
+  confDate: string;
+  showSearchbar: boolean;
+  textoBuscar='';
+  public isAuth:boolean=false;
+  nProductosCart=0;
+  cart: cart| null = {
     id_cliente: undefined,
     productos:undefined
     
   };
+ 
+  ProductosCarrito:Producto[];
+  segmentModel ="list";
   public tasksfiltro: FormGroup;
-  public isAuth:boolean=false;
-  private ProductosCarrito:Producto[];
+
+  p:Producto[];
+  @ViewChild('scheduleList', { static: true }) scheduleList: IonList;
   constructor( public alertCtrl: AlertController,
     public loadingCtrl: LoadingService,
     public LOadingCTR: LoadingController,
@@ -53,20 +57,44 @@ export class Category5Page implements OnInit {
     private modalController:ModalController,
     private apiS:ApiService,
     private formBuilder:FormBuilder,
-    private auth:AuthService,
-    private nativeS:NativeStorage) { }
+    private load:LoadingService,
 
+    private auth:AuthService,
+    private nativeS:NativeStorage ) { }
+
+    //__iNICIALIZA LOS FORMULARIOS PARA FILTRAR CATEGORIAS__
   async ngOnInit() {
+
     this.tasksfiltro = this.formBuilder.group({
 
-      orden: [''],
-     })
-      this.isAuth=this.auth.isAuthenticated();
+     orden: [''],
+  
+    })
+
+
+    this.tasks=this.formBuilder.group({
+      
+      categoria:[null],
+        
+      })
+      this.isAuth= this.auth.isAuthenticated();
     this.carga();
+  
+    if(this.auth.isAuthenticated()){
+     
+      this.cart=await this.nativeS.getItem("cart");
+      this.ProductosCarrito=this.cart.productos;
+    
+      this.nProductosCart=this.cart.productos.length;
+    }else{
+      console.log("no hay usuario");
+      this.nProductosCart=0;
+    }
+
   }
 
 
-  private doRefresh(event) {
+  doRefresh(event) {
     setTimeout(async () => {
    this.carga();
       event.target.complete();
@@ -74,7 +102,7 @@ export class Category5Page implements OnInit {
   }
 
 
-    /**
+  /**
 * Metodo que carga los productos de la lista
 
 * @param  orden Filtro para la lista
@@ -82,18 +110,16 @@ export class Category5Page implements OnInit {
   public async carga(){
     this.orden=  this.tasksfiltro.get('orden').value;
     this.listadoConFoto= [] ;
-    
-    this.loadingCtrl.presentLoading();
+
       this.listado=await this.apiS.getProductall();
       console.log(this.p);
       this.listado.forEach((data)=>{
-        if(data.categoria=="Décoracíon"){
+        if(data.categoria=="movil"){
           if(data.imagene1==null){
            
           }else{
            data.imagene1='data:image/jpeg;base64,'+data.imagene1;
            console.log(data);
-          
           }
           if(data.imagene2==null){
            
@@ -112,6 +138,7 @@ export class Category5Page implements OnInit {
           this.listadoConFoto.push(data);
         }
       }) 
+    
       if(this.orden==''){
         this.listadoConFoto.reverse();
       }
@@ -130,6 +157,7 @@ export class Category5Page implements OnInit {
   if(this.orden=='top'){
     this.listadoConFoto.reverse(); //aun no funciona
   }
+
     if(this.auth.isAuthenticated()){
      
       this.cart=await this.nativeS.getItem("cart");
@@ -140,12 +168,44 @@ export class Category5Page implements OnInit {
       console.log("no hay usuario");
       this.nProductosCart=0;
     }
-    this.loadingCtrl.Dismiss();
+
   }
 
 
+  /**
+* Metodo que compara los productos por precio 
 
-  private segmentChanged(ev?: any){
+*/
+  comparePrice1(a:Producto, b:Producto) {
+    if (a.precio>=b.precio) {
+      return -1;
+    }
+    if (a.precio<=b.precio) {
+      return 1;
+    }
+    // a debe ser igual b
+    return 0;
+  }
+
+
+  
+  /**
+* Metodo que compara los productos por precio 
+
+*/
+  comparePrice2(a:Producto, b:Producto) {
+    if (a.precio<=b.precio) {
+      return -1;
+    }
+    if (a.precio>=b.precio) {
+      return 1;
+    }
+    // a debe ser igual b
+    return 0;
+  }
+
+
+  segmentChanged(ev?: any){
     ev = ev?ev:{detail: {value: 'orden'}};
     if(ev.detail.value == 'list' ){
    this.orden="list";
@@ -154,44 +214,7 @@ export class Category5Page implements OnInit {
     }
   }
 
-
-
-    /**
-* Metodo que compara los productos por precio 
-
-*/
-  private comparePrice1(a:Producto, b:Producto) {
-    if (a.precio>=b.precio) {
-      return -1;
-    }
-    if (a.precio<=b.precio) {
-      return 1;
-    }
-    // a debe ser igual b
-    return 0;
-  }
-
-  
   ToastCarrito(){
-    this.loadingCtrl.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
-  }
-
-
-
-    /**
-* Metodo que compara los productos por precio 
-
-*/
-  private comparePrice2(a:Producto, b:Producto) {
-    if (a.precio<=b.precio) {
-      return -1;
-    }
-    if (a.precio>=b.precio) {
-      return 1;
-    }
-    // a debe ser igual b
-    return 0;
+    this.load.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
 }
-
-

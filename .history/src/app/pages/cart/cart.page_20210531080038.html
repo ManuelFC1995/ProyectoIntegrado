@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Carrito</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref=""    (click)="atras()"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" style="--ion-text-color: var(--ion-color-medium);" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-down-outline"></ion-refresher-content>
+  </ion-refresher>
+  <ion-card>
+    <ion-card-content class="ion-no-padding">
+      <ng-container>
+        <ion-item *ngFor="let item of listadoConFoto  ">
+          <ion-thumbnail slot="start">
+            <img [src]="item.imagene1">
+          </ion-thumbnail>
+          <ion-label>
+            <p></p>
+            <h2 (click)="this.infoproduct(item)">{{item.name}} </h2>
+            <p>{{item.categoria}} </p>
+            <p *ngIf="item.unidades > 0">Disponibles :{{item.unidades}} Vendidos: {{item.vendidos}}</p>
+           
+            <ion-text>
+              <strong style="color: black;">Precio: </strong>{{item.precio}} €
+            </ion-text>
+          </ion-label>
+          <ion-button fill="outline" class="ion-no-margin" color="danger" (click)="presentAlertConfirmDelete(item.id)"
+            slot="end">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ng-container>
+
+    </ion-card-content>
+  </ion-card>
+  <ion-item> <p style="font-weight: bold;margin-right: 2px;"> TOTAL : </p><p style="color: rgb(97, 102, 107);"> {{this.importe}} EUR</p> </ion-item>
+  <br>
+ <ion-button [routerLink]="[  '/direccion' ]" 
+ style="color: black;margin-left: 20px;margin-right: 20px; height: 44px;background-color: rgb(114, 187, 236);" expand="full"><ion-icon style="text-align: right;color: rgb(47, 113, 255);font-size: large;margin-right: 5px;" name="cart"></ion-icon>realizar Compra 
+ </ion-button>
+  <br><br> <br><br>
+</ion-content>
