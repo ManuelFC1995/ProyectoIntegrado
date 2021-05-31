@@ -14,69 +14,63 @@ import { LoadingService } from 'src/app/Services/loading.service';
   styleUrls: ['./cart.page.scss'],
 })
 export class CartPage implements OnInit {
-  cart: cart| null = {
+  cart: cart | null = {
     id_cliente: undefined,
-    productos:undefined
-    
+    productos: undefined
+
   };
 
-  public importe=0;
-  usuario:any;
-  public Usuario:Cliente  | null= {
-    id : undefined,
-    name:undefined,
+  public importe = 0;
+  usuario: any;
+  public Usuario: Cliente | null = {
+    id: undefined,
+    name: undefined,
     surname: undefined,
     email: undefined,
     pedidos: undefined,
-    
+
   };
   public listadoConFoto: Array<Producto> = [];
   public listado: Array<Producto> = [];
-  constructor(private route: ActivatedRoute,private apiS:ApiService,
-    private navCtrl: NavController,private nativeS:NativeStorage,
+  constructor(private route: ActivatedRoute, private apiS: ApiService,
+    private navCtrl: NavController, private nativeS: NativeStorage,
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
-   public loadingCtrl: LoadingService,private router :Router) { }
+    public loadingCtrl: LoadingService, private router: Router) { }
 
   ngOnInit() {
     this.carga();
   }
 
 
+
+  /**
+* Metodo que carga los productos del carrito del native storage
+
+* @param  cart  carrito de la compra
+*/
   public async carga() {
-  
+
     this.listadoConFoto = [];
-  
 
-  
-      this.cart=await this.nativeS.getItem("cart");
-      this.listado=this.cart.productos;
-
-      this.listado.forEach((data)=>{
-  
-        if(data.imagene1==null){
-         
-     
-        }else{
-         data.imagene1='data:image/jpeg;base64,'+data.imagene1;
-         console.log(data);
-        
-        }
-    
-        this.listadoConFoto.push(data);
-    
-      
-      
-    }) 
-
-      this.listadoConFoto.forEach(element => {
-        this.importe=this.importe+element.precio;
-      });
-     
-     
-  
+    this.cart = await this.nativeS.getItem("cart");
+    this.listado = this.cart.productos;
+    this.listado.forEach((data) => {
+      if (data.imagene1 == null) {
+      } else {
+        data.imagene1 = 'data:image/jpeg;base64,' + data.imagene1;
+        console.log(data);
+      }
+      this.listadoConFoto.push(data);
+    })
+    this.listadoConFoto.forEach(element => {
+      this.importe = this.importe + element.precio;
+    });
     this.listadoConFoto.reverse();
   }
+
+
+  //Refrescar la pagina
   doRefresh(event) {
     setTimeout(async () => {
       this.carga();
@@ -84,32 +78,40 @@ export class CartPage implements OnInit {
     }, 500);
   }
 
-  
+
+
+  /**
+* Metodo que Elimina el producto seleciconado del carrito
+
+* @param  id id del elemento a borrar 
+*/
   public async borrarElemento(id: any) {
-let productos :Producto[]=[];
-productos=this.cart.productos;
-productos.forEach(element => {
-    if(element.id==id){
-      var index = productos.indexOf(element);
-      if (index > -1) {
-        productos.splice(index, 1);
+    let productos: Producto[] = [];
+    productos = this.cart.productos;
+    productos.forEach(element => {
+      if (element.id == id) {
+        var index = productos.indexOf(element);
+        if (index > -1) {
+          productos.splice(index, 1);
 
-     }
+        }
+      }
+    });
+    this.cart = {
+      id_cliente: this.Usuario.id,
+      productos: productos
     }
-  });
-
-    
-  this.cart={
-    
-    id_cliente: this.Usuario.id,
-    productos:productos
-    
+    //guardar en el native storage
+    await this.nativeS.setItem("cart", this.cart);
   }
 
-//guardar en el native storage
-await this.nativeS.setItem("cart", this.cart);
-  }
 
+
+  /**
+* Metodo que muestra el alert para confirmar el borrado del producto del carrito
+
+* @param  id id del elemento a borrar 
+*/
   async presentAlertConfirmDelete(id: any) {
 
     const alert = await this.alertCtrl.create({
@@ -134,17 +136,20 @@ await this.nativeS.setItem("cart", this.cart);
         }
       ]
     });
-
     await alert.present();
     let result = await alert.onDidDismiss();
     console.log(result);
   }
+
+  //BackButton
   public atras() {
     this.navCtrl.back();
   }
 
-  GotoDireccion(){
+
+//LLeva a la pagina de direccion
+  GotoDireccion() {
     this.router.navigate(['/direccion'])
   }
-  
+
 }

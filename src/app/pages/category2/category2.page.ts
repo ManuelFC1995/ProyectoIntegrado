@@ -14,6 +14,9 @@ import { LoadingService } from 'src/app/Services/loading.service';
   templateUrl: './category2.page.html',
   styleUrls: ['./category2.page.scss'],
 })
+
+
+//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA IFORMATICA________
 export class Category2Page implements OnInit {
   orden;
   segmentModel ="list";
@@ -59,20 +62,16 @@ export class Category2Page implements OnInit {
 
     this.tasksfiltro = this.formBuilder.group({
 
-
       orden: [''],
-      
-       
- 
+   
      })
  
     this.tasks=this.formBuilder.group({
-      
-  
+ 
       categoria:[null],
         
       })
-      this.isAuth=this.auth.isAuthenticated();
+      this.isAuth= this.auth.isAuthenticated();
     this.carga();
 
     if(this.auth.isAuthenticated()){
@@ -86,12 +85,22 @@ export class Category2Page implements OnInit {
       this.nProductosCart=0;
     }
   }
+
+
+//Refrescar la pagina
   doRefresh(event) {
     setTimeout(async () => {
    this.carga();
       event.target.complete();
     }, 500);
   }
+
+
+    /**
+* Metodo que carga los productos de la lista
+
+* @param  orden Filtro para la lista
+*/
   public async carga(){
     this.orden=  this.tasksfiltro.get('orden').value;
     this.listadoConFoto= [] ;
@@ -100,10 +109,9 @@ export class Category2Page implements OnInit {
       this.listado=await this.apiS.getProductall();
       console.log(this.p);
       this.listado.forEach((data)=>{
-        if(data.categoria=="Decoracion"){
+        if(data.categoria=="Informática"){
           if(data.imagene1==null){
-           
-       
+   
           }else{
            data.imagene1='data:image/jpeg;base64,'+data.imagene1;
            console.log(data);
@@ -118,8 +126,7 @@ export class Category2Page implements OnInit {
           
           }
           if(data.imagene3==null){
-          
-         
+     
           }else{
            data.imagene3='data:image/jpeg;base64,'+data.imagene3;
            console.log(data);
@@ -159,10 +166,11 @@ export class Category2Page implements OnInit {
    
   }
 
-  ionViewDidEnter(){
 
-    
-  }
+  /**
+* Metodo que compara los productos por precio 
+
+*/
   comparePrice1(a:Producto, b:Producto) {
     if (a.precio>=b.precio) {
       return -1;
@@ -174,6 +182,11 @@ export class Category2Page implements OnInit {
     return 0;
   }
 
+
+    /**
+* Metodo que compara los productos por precio 
+
+*/
   comparePrice2(a:Producto, b:Producto) {
     if (a.precio<=b.precio) {
       return -1;
@@ -184,6 +197,8 @@ export class Category2Page implements OnInit {
     // a debe ser igual b
     return 0;
   }
+
+
   segmentChanged(ev?: any){
     ev = ev?ev:{detail: {value: 'orden'}};
     if(ev.detail.value == 'list' ){
@@ -191,5 +206,9 @@ export class Category2Page implements OnInit {
     }else if(ev.detail.value == 'block' ){
       this.orden="block";
     }
+  }
+
+  ToastCarrito(){
+    this.loadingCtrl.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
 }

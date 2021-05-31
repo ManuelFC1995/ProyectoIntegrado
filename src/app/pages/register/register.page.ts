@@ -15,89 +15,91 @@ import { LoadingService } from 'src/app/Services/loading.service';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
+
+//-----------------CLASE DE REGISTRO CORREO Y CONTRASEÑA------------------------//
 export class RegisterPage implements OnInit {
-  public Cliente: Cliente | null={
-    
+  public Cliente: Cliente | null = {
     name: undefined,
-   
     email: undefined,
-   
-    pedidos:undefined,
-}
+    pedidos: undefined,
+  }
+
   register: FormGroup;
-  userdata: any; 
- 
- 
+  userdata: any;
+
 
   erroresForm = {
     'email': '',
     'password': ''
-    }
+  }
   mensajesValidacion = {
     'first_name': {
       'required': 'Nombre de usuario Obligatorio',
       'first_name': 'Introduzca un nombre válido'
-      },
+    },
     'email': {
-    'required': 'Email obligatorio',
-    'email': 'Introduzca una dirección email correcta'
+      'required': 'Email obligatorio',
+      'email': 'Introduzca una dirección email correcta'
     },
     'password': {
-    'required': 'Contraseña obligatoria',
-    'pattern': 'La contraseña debe tener al menos una letra un número ',
-    'minlength': 'y más de 6 caracteres'
+      'required': 'Contraseña obligatoria',
+      'pattern': 'La contraseña debe tener al menos una letra un número ',
+      'minlength': 'y más de 6 caracteres'
     }
-    }
+  }
 
- 
+
   constructor(
-    private fb: FormBuilder,private formBuilder: FormBuilder,
-      private autService: AuthService,
-      private router: Router,
-      private activatedRouter: ActivatedRoute,
-      private LoadingS:LoadingService,
-      private apiS:ApiService,
-      private NativeStorage:NativeStorage
-     
+    private fb: FormBuilder, private formBuilder: FormBuilder,
+    private autService: AuthService,
+    private router: Router,
+    private activatedRouter: ActivatedRoute,
+    private LoadingS: LoadingService,
+    private apiS: ApiService,
+    private NativeStorage: NativeStorage
+
   ) { }
 
   onRegister() {
     if (this.register.valid) {
       console.log(this.register.value);
-    
     }
   }
 
+
+  /**
+* Metodo que REGISTRA EL USUARIO EN FIREBASE  Y LO CREA EN LA BASE DE DATOS
+
+* @param Usuario  Usuario de firebase
+* @param  Cliente Usuario de la base de datos
+*/
   async onSubmit() {
     this.LoadingS.presentLoading();
+    this.userdata = this.saveUserdata();
 
-      this.userdata = this.saveUserdata();
-   
-    try{
-    let Usuario=  await  this.autService.registroUsuario(this.userdata);
-     this.Cliente.name=  this.register.get('first_name').value,
-     this.Cliente.email=this.register.get('email').value,
-    this.Cliente.id=  Usuario.user.uid;
+    try {
+      let Usuario = await this.autService.registroUsuario(this.userdata);
+      this.Cliente.name = this.register.get('first_name').value,
+        this.Cliente.email = this.register.get('email').value,
+        this.Cliente.id = Usuario.user.uid;
 
-      
-    
-    this.apiS.createUser(this.Cliente);
-
-    this.router.navigate(['/login'])
-  }catch{
-    this.LoadingS.presentToast("El usuario ya existe en esta aplicación","#ff7f50");
-  }
- 
-    this.LoadingS.Dismiss();
+      this.apiS.createUser(this.Cliente);
+      this.router.navigate(['/login'])
+    } catch {
+      this.LoadingS.presentToast("El usuario ya existe en esta aplicación", "#ff7f50");
     }
+    this.LoadingS.Dismiss();
+  }
 
+
+  //Iniciaiza la validacion del formulario
   ngOnInit() {
     this.register = this.fb.group({
       first_name: this.fb.control('', [
         Validators.required,
         Validators.maxLength(20)
       ]),
-    
+
       email: this.fb.control('', [
         Validators.required,
         Validators.email
@@ -118,11 +120,12 @@ export class RegisterPage implements OnInit {
     });
     this.register.valueChanges.subscribe(data =>
       this.onValueChanged(data));
-       this.onValueChanged();
+    this.onValueChanged();
 
-     
+
   }
 
+  //Validacion de la contraseña
   passwordConfirmMatchValidator(g: FormGroup) {
     const password = g.get('password');
     const password_confirm = g.get('password_confirm');
@@ -137,41 +140,42 @@ export class RegisterPage implements OnInit {
       password_confirm.setErrors(null);
     }
   }
+
+
+
+
+  //Obtiene el correo y contraseña
   saveUserdata() {
-   
     const saveUserdata = {
-     
-    email: this.register.get('email').value,
-    password: this.register.get('password').value,
+      email: this.register.get('email').value,
+      password: this.register.get('password').value,
     };
     return saveUserdata;
-    }
+  }
 
-    saveUserName() {
-      const saveUsername = {
-        
+  saveUserName() {
+    const saveUsername = {
       name: this.register.get('first_name').value,
-   
-      };
-      return saveUsername;
-      }
+    };
+    return saveUsername;
+  }
 
-  
 
-    onValueChanged(data?: any) {
-      if (!this.register) { return; }
-      const form = this.register;
-      for (const field in this.erroresForm) {
-     
+
+  onValueChanged(data?: any) {
+    if (!this.register) { return; }
+    const form = this.register;
+    for (const field in this.erroresForm) {
+
       this.erroresForm[field] = '';
       const control = form.get(field);
       if (control && control.dirty && !control.valid) {
-      const messages = this.mensajesValidacion[field];
-      for (const key in control.errors) {
-      this.erroresForm[field] += messages[key] + ' ';
-      }
-      }
+        const messages = this.mensajesValidacion[field];
+        for (const key in control.errors) {
+          this.erroresForm[field] += messages[key] + ' ';
+        }
       }
     }
+  }
 
 }
