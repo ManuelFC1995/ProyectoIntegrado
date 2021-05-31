@@ -14,6 +14,8 @@ import { LoadingService } from 'src/app/Services/loading.service';
   templateUrl: './category3.page.html',
   styleUrls: ['./category3.page.scss'],
 })
+
+//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA SMARTWATCH________
 export class Category3Page implements OnInit {
   public listado: Array<Producto>;
   public listadoConFoto: Array<Producto> = [];
@@ -54,23 +56,29 @@ export class Category3Page implements OnInit {
     private formBuilder: FormBuilder,
     private auth: AuthService,
     private nativeS: NativeStorage) { }
-
+  //__iNICIALIZA LOS FORMULARIOS PARA FILTRAR CATEGORIAS__
   ngOnInit() {
     this.tasksfiltro = this.formBuilder.group({
 
-
       orden: [''],
-
-
 
     })
   }
+
+  //Resfrescar la pagina
   doRefresh(event) {
     setTimeout(async () => {
       this.carga();
       event.target.complete();
     }, 500);
   }
+
+
+      /**
+* Metodo que carga los productos de la lista
+
+* @param  orden Filtro para la lista
+*/
   public async carga() {
     this.orden = this.tasksfiltro.get('orden').value;
     this.listadoConFoto = [];
@@ -78,7 +86,7 @@ export class Category3Page implements OnInit {
     this.listado = await this.apiS.getProductall();
     console.log(this.p);
     this.listado.forEach((data) => {
-      if (data.categoria == "Cojines y Almohadas") {
+      if (data.categoria == "Smartwatch") {
         if (data.imagene1 == null) {
 
 
@@ -138,10 +146,10 @@ export class Category3Page implements OnInit {
   
   }
 
-  ionViewDidEnter() {
-    this.carga();
+   /**
+* Metodo que compara los productos por precio 
 
-  }
+*/
   comparePrice1(a: Producto, b: Producto) {
     if (a.precio >= b.precio) {
       return -1;
@@ -153,6 +161,11 @@ export class Category3Page implements OnInit {
     return 0;
   }
 
+
+    /**
+* Metodo que compara los productos por precio 
+
+*/
   comparePrice2(a: Producto, b: Producto) {
     if (a.precio <= b.precio) {
       return -1;
@@ -170,5 +183,9 @@ export class Category3Page implements OnInit {
     } else if (ev.detail.value == 'block') {
       this.orden = "block";
     }
+  }
+
+  ToastCarrito(){
+    this.loadingCtrl.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
 }

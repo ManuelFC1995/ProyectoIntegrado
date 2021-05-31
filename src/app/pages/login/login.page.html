@@ -59,25 +59,17 @@
           
        
        
-          <ion-grid>
-            <ion-row  style="margin-top: 30px;align-items: center;margin-left: 81px;"  class="ion-align-items-middle">
-              <ion-col style="text-align: center;" size="4">
-              <div style="background-color: aliceblue;">
-                <ion-button  style="color: rgb(179, 119, 119);" clear color="primary"  expand="full" (click)="loginGoogle()"> <img [src]="GoogleLogo" >   </ion-button>
-              </div>
-              </ion-col >
-
-
-              <ion-col style="text-align: center;" size="4">
-                <ion-button  clear color=" --ion-color-facebook" style="color: rgb(0, 0, 0);" clear color="primary" expand="full" >
-                  <img [src]="FacebookLogo" > </ion-button>
-              
-              </ion-col >
-            </ion-row>
-          </ion-grid>
-      <br>   
+            <p class="light-gray">
+              -- OR LOGIN WITH --
+            </p>
+            <br>
+            <ion-button (click)="this.loginGoogle()"  color="danger"  shape="round">
+              Google
+              <ion-icon slot="end" name="logo-google"></ion-icon>
+            </ion-button>
+      <br>    <br>   <br>  
           <div style="text-align: center; color: black;">
-          <ion-button  clear color="tertiary" style="padding-top: 0px;" > <img [src]="GooglePlay" >Consiguela en la <br> APP STORE</ion-button>
+          <ion-button  clear color="dark" style="padding-top: 0px;height: 60px;" > <img [src]="GooglePlay" >Consiguela en la <br> APP STORE</ion-button>
         </div>
         </ion-col>
       </ion-row>

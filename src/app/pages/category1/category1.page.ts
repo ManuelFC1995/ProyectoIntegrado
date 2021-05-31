@@ -14,6 +14,8 @@ import { LoadingService } from 'src/app/Services/loading.service';
   templateUrl: './category1.page.html',
   styleUrls: ['./category1.page.scss'],
 })
+
+//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA MOVILES________
 export class Category1Page implements OnInit {
   public listado: Array<Producto> ;
   public listadoConFoto: Array<Producto> = [] ;
@@ -42,14 +44,7 @@ export class Category1Page implements OnInit {
  
   ProductosCarrito:Producto[];
   segmentModel ="list";
-
-//---------------------------------------
   public tasksfiltro: FormGroup;
-
-
-//---------------------------
-
-
 
   p:Producto[];
   @ViewChild('scheduleList', { static: true }) scheduleList: IonList;
@@ -66,32 +61,26 @@ export class Category1Page implements OnInit {
     private formBuilder:FormBuilder,
     private load:LoadingService,
 
-    //-----------------------
     private auth:AuthService,
     private nativeS:NativeStorage ) { }
 
+    //__iNICIALIZA LOS FORMULARIOS PARA FILTRAR CATEGORIAS__
   async ngOnInit() {
-//------------------------------------------
+
     this.tasksfiltro = this.formBuilder.group({
 
-
      orden: [''],
-     
-      
-
+  
     })
 
-    //-----------------------------------------------
     this.tasks=this.formBuilder.group({
       
-  
       categoria:[null],
         
       })
-      this.isAuth=this.auth.isAuthenticated();
+      this.isAuth= this.auth.isAuthenticated();
     this.carga();
-   
-   
+  
     if(this.auth.isAuthenticated()){
      
       this.cart=await this.nativeS.getItem("cart");
@@ -102,26 +91,30 @@ export class Category1Page implements OnInit {
       console.log("no hay usuario");
       this.nProductosCart=0;
     }
-
-  
-
   }
+
+
   doRefresh(event) {
     setTimeout(async () => {
    this.carga();
       event.target.complete();
     }, 500);
   }
+
+
+  /**
+* Metodo que carga los productos de la lista
+
+* @param  orden Filtro para la lista
+*/
   public async carga(){
-  
     this.orden=  this.tasksfiltro.get('orden').value;
     this.listadoConFoto= [] ;
-   
-    
+
       this.listado=await this.apiS.getProductall();
       console.log(this.p);
       this.listado.forEach((data)=>{
-        if(data.categoria=="Toallas y Albornoces"){
+        if(data.categoria=="movil"){
           if(data.imagene1==null){
            
           }else{
@@ -143,7 +136,6 @@ export class Category1Page implements OnInit {
         
           }
           this.listadoConFoto.push(data);
-      
         }
       }) 
     
@@ -165,7 +157,7 @@ export class Category1Page implements OnInit {
   if(this.orden=='top'){
     this.listadoConFoto.reverse(); //aun no funciona
   }
-  
+
     if(this.auth.isAuthenticated()){
      
       this.cart=await this.nativeS.getItem("cart");
@@ -177,17 +169,13 @@ export class Category1Page implements OnInit {
       this.nProductosCart=0;
     }
 
-//------------------------------
-
-  //----------------------------------
-   
   }
 
-  ionViewDidEnter(){
 
-    
-  }
+  /**
+* Metodo que compara los productos por precio 
 
+*/
   comparePrice1(a:Producto, b:Producto) {
     if (a.precio>=b.precio) {
       return -1;
@@ -199,6 +187,12 @@ export class Category1Page implements OnInit {
     return 0;
   }
 
+
+  
+  /**
+* Metodo que compara los productos por precio 
+
+*/
   comparePrice2(a:Producto, b:Producto) {
     if (a.precio<=b.precio) {
       return -1;
@@ -209,6 +203,8 @@ export class Category1Page implements OnInit {
     // a debe ser igual b
     return 0;
   }
+
+
   segmentChanged(ev?: any){
     ev = ev?ev:{detail: {value: 'orden'}};
     if(ev.detail.value == 'list' ){
@@ -216,5 +212,9 @@ export class Category1Page implements OnInit {
     }else if(ev.detail.value == 'block' ){
       this.orden="block";
     }
+  }
+
+  ToastCarrito(){
+    this.load.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
 }

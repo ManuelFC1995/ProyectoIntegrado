@@ -1,6 +1,6 @@
 
 ion-content {
-    --background:  rgb(255, 212, 131);
+   
     position: relative;
  
   margin: 0 auto;
@@ -20,4 +20,7 @@ align-content:center !important;
       ion-item:not(:last-child) {
           border-bottom: 1px solid var(--ion-color-medium);
       }
+  }
+  ion-toolbar {
+    --background:#479dff ;
   }

@@ -15,29 +15,46 @@ import { AuthService } from 'src/app/Services/auth.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
+
+
+//-----------------CLASE DE LOGIN------------------------//
 export class LoginPage implements OnInit {
   login: FormGroup;
   userdata: any;
-
   user:Cliente;
   GooglePlay:string="assets/IMG/Playstore.png"
   FacebookLogo:string="assets/IMG/logo-facebook.png"
   GoogleLogo="assets/IMG/google-logo.png"
  mensaje = false;
+
   constructor(
     private fb: FormBuilder,private navCtrl: NavController,private google:GooglePlus,
     private authS:AuthService,private router:Router,  
-    private modalController:ModalController,private activatedRouter: ActivatedRoute,private nativeS:NativeStorage
-  ) { }
+    private modalController:ModalController,private activatedRouter: ActivatedRoute,private nativeS:NativeStorage)
+     { }
 
   onLogin() {
     if (this.login.valid) {
       console.log(this.login.value);
     }
   }
+
+
+    /**
+* Metodo que COMPRUEBA SI HAY UN USUARIO YA LOGUEADO
+
+* @param authS  VALOR BOOLEANO DE LA RESPUESTA
+
+*/
   isAuth() {
     return this.authS.isAuthenticated();
     }
+
+
+
+        /**
+* INIZIALIZA LA VALIDACION DEL FORMULARIO
+*/
   ngOnInit() {
   
     this.login = this.fb.group({
@@ -54,6 +71,13 @@ export class LoginPage implements OnInit {
     });
   }
 
+
+      /**
+* Metodo que INICIA SESION CON CORREO Y CONTRASEÑA
+
+* @param userdata VALOR DE LOS CAMPOS CORREO Y CONTRASEÑA
+
+*/
   async onSubmit() {
     this.userdata = this.saveUserdata();
     this.authS.inicioSesion(this.userdata);
@@ -63,8 +87,10 @@ export class LoginPage implements OnInit {
     this.mensaje = true
     }
     }, 2000);
-   
     }
+
+
+  //Obtiene el correo y contraseña
     saveUserdata() {
       const saveUserdata = {
       email: this.login.get('email').value,
@@ -73,6 +99,16 @@ export class LoginPage implements OnInit {
       return saveUserdata;
       }
 
+
+        /**
+* Metodo que inicia sesion con el metodo de Google 
+y lo guarda en el almacenamiento local (Native storage),
+Si es la primera vez que se inicia sesion se crea el cliente en la base de datos y sino lo actualiza 
+por si hay cambios en la cuenta de google
+
+realizará un SetItem ->  this.storage.getItem("userGoogle");
+realizará un SetItem ->  this.storage.getItem("userApi");
+*/
       public async loginGoogle(){
         let u=await this.authS.loginGoogle();
         if(u.token!=-1){
