@@ -63,6 +63,14 @@ const routes: Routes = [
     path: 'pedidos',
     loadChildren: () => import('./pages/pedidos/pedidos.module').then( m => m.PedidosPageModule)
   },
+  {
+    path: 'category5',
+    loadChildren: () => import('./pages/category5/category5.module').then( m => m.Category5PageModule)
+  },
+  {
+    path: 'category6',
+    loadChildren: () => import('./pages/category6/category6.module').then( m => m.Category6PageModule)
+  },
 
 ];
 

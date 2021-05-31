@@ -11,16 +11,29 @@ export class LoadingService {
     public toastController: ToastController) { }
   
   
+
+                      /**
+* Metodo que muestra el loading
+
+*/
     async presentLoading() {
       const loading = await this.loadingController.create({
         cssClass: 'my-custom-class',
       
-      //  message: '<img src="/assets/IMG/animation_cart.gif">',
-        spinner:'crescent',
-        leaveAnimation:null,
+       // message: '<img src="/assets/img/loading.svg">',
+        spinner:"crescent",
+       // spinner:null,
+        //leaveAnimation:null,
       });
       await loading.present();
     }
+
+
+
+                          /**
+* Metodo que muestra el toast
+
+*/
     async presentToast(msg:string,col:string) {
       const toast = await this.toastController.create({
         message: msg,
@@ -30,6 +43,12 @@ export class LoadingService {
       });
       toast.present();
     }
+
+
+                          /**
+* Metodo que muestra el toast
+
+*/
     async presentToastSinColor(msg:string) {
       const toast = await this.toastController.create({
         message: msg,

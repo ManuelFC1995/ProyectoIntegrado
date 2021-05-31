@@ -1,10 +1,10 @@
 <ion-app>
-  <ion-split-pane  style="background-color: goldenrod;" contentId="main-content">
+  <ion-split-pane  style="background-color: rgb(255, 255, 255);" contentId="main-content">
     
     <ion-menu  contentId="main-content" type="overlay">
       <ion-content >
         <ion-list id="inbox-list">
-          <ion-list-header>Vianco</ion-list-header>
+          <ion-list-header> <ion-img  expand="full" [src]="imagenLogo"  style="margin-top: 1px;margin-bottom: 1px;"  fill="outline"></ion-img></ion-list-header>
           <ion-note></ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
@@ -21,29 +21,8 @@
       
         </ion-list>
         <ion-menu-toggle auto-hide="false">
-        <ng-container *ngIf="!isL()">
-        <ion-button  clear color="danger" style="text-align: center; margin-top: 15px;"  routerDirection="root" clear color="light" expand="block" [routerLink]="[ 'login' ]"lines="none" detail="false" routerLinkActive="selected" class="ion-margin-start ion-margin-end ion-margin-bottom" type="submit"
-        >
-        Log In
-     
-      </ion-button>
-
-    </ng-container>
-   
-
-     
-      <ng-container *ngIf="!isLogin">
-  
-    </ng-container>
-      
-
-      <ng-container  *ngIf="isL()">
-      <ion-button  clear color="danger" (click)="this.Logaut()" expand="block" class="ion-margin" [routerLink]="[  '../login' ]"
-      routerDirection="forward"
-      >
-      Salir
-    </ion-button>
-  </ng-container>
+    
+    
 
 </ion-menu-toggle>
 

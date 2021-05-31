@@ -13,9 +13,12 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 })
 export class AppComponent {
 isLogin:boolean;
+imagenLogo = "/assets/IMG/Logo.png";
+
+
   public appPages = [
     { title: 'HOME', url: '/folder/Inbox', icon: 'home' },
-    { title: 'CATEGORIAS', url: '/folder/Outbox', icon: 'man' },
+    { title: 'CATEGORIAS', url: '/folder/Outbox', icon: 'apps' },
    { title: 'PERFIL', url: '/folder/Favorites', icon: 'people' },
     { title: 'LISTA DE DESEOS', url: '/folder/Archived', icon: 'archive' },
     { title: 'CONTACTANOS', url: '/folder/Spam', icon: 'warning' },
@@ -29,21 +32,29 @@ isLogin:boolean;
 
 
     initializeApp() {
-   
+ 
     
   
-      this.platform.ready().then(() => {
+      this.platform.ready().then(async () => {
    this.authS.init();
-   this.isLogin=  this.authS.isAuthenticated();
+ 
         this.splashScreen.hide();
-     
+   
       });
     }
   
 
 
-  ngOnInit(): void {
-    this.isLogin=  this.authS.isAuthenticated();
+  async ngOnInit(): Promise<void> {
+    if(!this.authS.isAuthenticated){
+      this.appPages = [
+        { title: 'HOME', url: '/folder/Inbox', icon: 'home' },
+        { title: 'CATEGORIAS', url: '/folder/Outbox', icon: 'apps' },
+       { title: 'LOGIN', url: '/folder/Favorites', icon: 'people' },
+        { title: 'LISTA DE DESEOS', url: '/folder/Archived', icon: 'archive' },
+        { title: 'CONTACTANOS', url: '/folder/Spam', icon: 'warning' },
+      ];
+    }
     firebase.initializeApp({
       apiKey: "AIzaSyDD2nDKh11H9qgeUy_UPc_AHWg2DRmAE20",
       authDomain:"vianco-cdb35.firebaseapp.com"
@@ -63,8 +74,8 @@ isLogin:boolean;
     environment.IsLogin=true;
     this.isLogin=true;
   }
-  Logaut(){
+  async Logaut(){
     this.authS.logout();
-    this.isLogin=this.authS.isAuthenticated();
+    this.isLogin= await this.authS.isAuthenticated();
   }
 }
