@@ -10,7 +10,8 @@ import { Direccion } from 'src/app/model/Direccion';
 import { Pedido } from 'src/app/model/Pedido';
 import { Producto } from 'src/app/model/Producto';
 import { ApiService } from 'src/app/Services/api.service';
-import { AuxService } from 'src/app/Services/aux.service';
+
+import { DireccionService } from 'src/app/Services/direccion.service';
 import { LoadingService } from 'src/app/Services/loading.service';
 
 @Component({
@@ -76,7 +77,7 @@ export class PagosPage implements OnInit {
 
 
 
-  constructor(private aux: AuxService, public alertCtrl: AlertController,
+  constructor(private aux: DireccionService, public alertCtrl: AlertController,
     public actionSheetController: ActionSheetController,
     public loadingCtrl: LoadingService,
     public LOadingCTR: LoadingController,

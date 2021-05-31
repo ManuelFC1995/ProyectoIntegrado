@@ -7,7 +7,8 @@ import { cart } from 'src/app/model/cart';
 import { Localidad } from 'src/app/model/Localidad';
 import { Pedido } from 'src/app/model/Pedido';
 import { ApiService } from 'src/app/Services/api.service';
-import { AuxService } from 'src/app/Services/aux.service';
+import { DireccionService } from 'src/app/Services/direccion.service';
+
 
 import { LoadingService } from 'src/app/Services/loading.service';
 
@@ -110,7 +111,7 @@ export class DireccionPage implements OnInit {
     public loadingCtrl: LoadingService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private aux: AuxService) {
+    private aux: DireccionService) {
 
     //Inicializa el formulario
     this.tasks = this.formBuilder.group({

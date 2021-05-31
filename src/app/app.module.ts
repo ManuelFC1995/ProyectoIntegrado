@@ -20,7 +20,8 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { DatePipe } from '@angular/common'
-import { AuxService } from './Services/aux.service';
+
+import { DireccionService } from './Services/direccion.service';
 export function PlayerFactory(){
 return player;
 }
@@ -45,7 +46,7 @@ return player;
     LoadingService,
     LoadingController,
     GooglePlus,
-    AuxService,
+   DireccionService,
  
     { provide: RouteReuseStrategy, 
       useClass: IonicRouteStrategy, 
