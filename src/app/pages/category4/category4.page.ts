@@ -14,6 +14,9 @@ import { LoadingService } from 'src/app/Services/loading.service';
   templateUrl: './category4.page.html',
   styleUrls: ['./category4.page.scss'],
 })
+
+
+//_____CLASE QUE CARGA LOS PRODUCTOS DE LA CATEGORIA SONIDO_______
 export class Category4Page implements OnInit {
   segmentModel ="list";
   orden;
@@ -55,36 +58,43 @@ export class Category4Page implements OnInit {
     private auth:AuthService,
     private nativeS:NativeStorage) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.tasksfiltro = this.formBuilder.group({
 
-
       orden: [''],
-      
-       
  
      })
+
       this.isAuth=this.auth.isAuthenticated();
     this.carga();
   }
+
+
+
   doRefresh(event) {
     setTimeout(async () => {
    this.carga();
       event.target.complete();
     }, 500);
   }
+
+
+
+  /**
+* Metodo que carga los productos de la lista
+
+* @param  orden Filtro para la lista
+*/
   public async carga(){
     this.orden=  this.tasksfiltro.get('orden').value;
     this.listadoConFoto= [] ;
-    
-    
+
       this.listado=await this.apiS.getProductall();
       console.log(this.p);
       this.listado.forEach((data)=>{
-        if(data.categoria=="Exterior"){
+        if(data.categoria=="Sónido"){
           if(data.imagene1==null){
-           
-       
+
           }else{
            data.imagene1='data:image/jpeg;base64,'+data.imagene1;
            console.log(data);
@@ -140,10 +150,7 @@ export class Category4Page implements OnInit {
   
   }
 
-  ionViewDidEnter(){
 
-    
-  }
   segmentChanged(ev?: any){
     ev = ev?ev:{detail: {value: 'orden'}};
     if(ev.detail.value == 'list' ){
@@ -153,6 +160,10 @@ export class Category4Page implements OnInit {
     }
   }
 
+  /**
+* Metodo que compara los productos por precio 
+
+*/
   comparePrice1(a:Producto, b:Producto) {
     if (a.precio>=b.precio) {
       return -1;
@@ -164,6 +175,11 @@ export class Category4Page implements OnInit {
     return 0;
   }
 
+
+    /**
+* Metodo que compara los productos por precio 
+
+*/
   comparePrice2(a:Producto, b:Producto) {
     if (a.precio<=b.precio) {
       return -1;
@@ -173,5 +189,9 @@ export class Category4Page implements OnInit {
     }
     // a debe ser igual b
     return 0;
+  }
+
+  ToastCarrito(){
+    this.loadingCtrl.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
 }

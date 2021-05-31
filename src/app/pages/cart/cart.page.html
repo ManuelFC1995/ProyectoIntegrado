@@ -14,13 +14,13 @@
   <ion-card>
     <ion-card-content class="ion-no-padding">
       <ng-container>
-        <ion-item *ngFor="let item of listadoConFoto  ">
+        <ion-item *ngFor="let item of listadoConFoto  "  routerLink="/producto/{{item.id}}">
           <ion-thumbnail slot="start">
             <img [src]="item.imagene1">
           </ion-thumbnail>
           <ion-label>
             <p></p>
-            <h2 (click)="this.infoproduct(item)">{{item.name}} </h2>
+            <h2 >{{item.name}} </h2>
             <p>{{item.categoria}} </p>
             <p *ngIf="item.unidades > 0">Disponibles :{{item.unidades}} Vendidos: {{item.vendidos}}</p>
            

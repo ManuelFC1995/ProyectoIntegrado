@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Producto } from 'src/app/model/Producto';
 import { ApiService } from 'src/app/Services/api.service';
-import { LoadingController, NavController } from '@ionic/angular'
+import { AlertController, LoadingController, NavController } from '@ionic/angular'
 import { LoadingService } from 'src/app/Services/loading.service';
 import { cart } from 'src/app/model/cart';
 import { AuthService } from 'src/app/Services/auth.service';
@@ -13,6 +13,9 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
   templateUrl: './producto.page.html',
   styleUrls: ['./producto.page.scss'],
 })
+
+
+//-----------------CLASE QUE CARGA EL PRODUCTO PARA COMPRARLO------------------------//
 export class ProductoPage implements OnInit {
   slideOptsCube = {
     on: {
@@ -85,10 +88,10 @@ export class ProductoPage implements OnInit {
     on: {
       beforeInit() {
         const swiper = this;
-  
+
         swiper.classNames.push(`${swiper.params.containerModifierClass}coverflow`);
         swiper.classNames.push(`${swiper.params.containerModifierClass}3d`);
-  
+
         swiper.params.watchSlidesProgress = true;
         swiper.originalParams.watchSlidesProgress = true;
       },
@@ -109,25 +112,25 @@ export class ProductoPage implements OnInit {
           const slideSize = slidesSizesGrid[i];
           const slideOffset = $slideEl[0].swiperSlideOffset;
           const offsetMultiplier = ((center - slideOffset - (slideSize / 2)) / slideSize) * params.modifier;
-  
-           let rotateY = isHorizontal ? rotate * offsetMultiplier : 0;
+
+          let rotateY = isHorizontal ? rotate * offsetMultiplier : 0;
           let rotateX = isHorizontal ? 0 : rotate * offsetMultiplier;
           // var rotateZ = 0
           let translateZ = -translate * Math.abs(offsetMultiplier);
-  
-           let translateY = isHorizontal ? 0 : params.stretch * (offsetMultiplier);
+
+          let translateY = isHorizontal ? 0 : params.stretch * (offsetMultiplier);
           let translateX = isHorizontal ? params.stretch * (offsetMultiplier) : 0;
-  
-           // Fix for ultra small values
+
+          // Fix for ultra small values
           if (Math.abs(translateX) < 0.001) translateX = 0;
           if (Math.abs(translateY) < 0.001) translateY = 0;
           if (Math.abs(translateZ) < 0.001) translateZ = 0;
           if (Math.abs(rotateY) < 0.001) rotateY = 0;
           if (Math.abs(rotateX) < 0.001) rotateX = 0;
-  
-           const slideTransform = `translate3d(${translateX}px,${translateY}px,${translateZ}px)  rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-  
-           $slideEl.transform(slideTransform);
+
+          const slideTransform = `translate3d(${translateX}px,${translateY}px,${translateZ}px)  rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+          $slideEl.transform(slideTransform);
           $slideEl[0].style.zIndex = -Math.abs(Math.round(offsetMultiplier)) + 1;
           if (params.slideShadows) {
             // Set shadows
@@ -145,8 +148,8 @@ export class ProductoPage implements OnInit {
             if ($shadowAfterEl.length) $shadowAfterEl[0].style.opacity = (-offsetMultiplier) > 0 ? -offsetMultiplier : 0;
           }
         }
-  
-         // Set correct perspective for IE10
+
+        // Set correct perspective for IE10
         if (swiper.support.pointerEvents || swiper.support.prefixedPointerEvents) {
           const ws = $wrapperEl[0].style;
           ws.perspectiveOrigin = `${center}px 50%`;
@@ -161,202 +164,191 @@ export class ProductoPage implements OnInit {
       }
     }
   }
- product: Producto| null = {
-  id: undefined,
-  name: undefined,
-  id_producto: undefined,
-  descripcion:undefined,
-  categoria: undefined,
-  precio: undefined,
-  imagene1:undefined ,
-  imagene2: undefined,
-  imagene3:undefined ,
-  Uds:undefined,
-  Pedido:undefined ,
-};
+  product: Producto | null = {
+    id: undefined,
+    name: undefined,
+    id_producto: undefined,
+    descripcion: undefined,
+    categoria: undefined,
+    precio: undefined,
+    imagene1: undefined,
+    imagene2: undefined,
+    imagene3: undefined,
+    Uds: undefined,
+    Pedido: undefined,
+  };
+  cargado = false;
+  productsinfoto: Producto;
+  nProductosCart = 0;
+  isAuth: boolean = false;
+  usuario: any;
+  public Usuario: Cliente | null = {
+    id: undefined,
+    name: undefined,
+    surname: undefined,
+    email: undefined,
+    pedidos: undefined,
 
-productsinfoto:Producto;
-nProductosCart=0;
-isAuth:boolean=false;
-usuario:any;
-public Usuario:Cliente  | null= {
-  id : undefined,
-  name:undefined,
-  surname: undefined,
-  email: undefined,
-  pedidos: undefined,
-  
-};
-cart: cart| null = {
-  id_cliente: undefined,
-  productos:undefined
-  
-};
-category:string;
-ProductosCarrito:Producto[];
-relacionados:Producto[];
-relacionadosFotos:Producto[];
-  constructor(private load:LoadingService, private route: ActivatedRoute,
-    private apiS:ApiService,private navCtrl: NavController,
-    private authS:AuthService,public loadingController: LoadingController,  private storage: NativeStorage) { }
+  };
+  cart: cart | null = {
+    id_cliente: undefined,
+    productos: undefined
+
+  };
+  category: string;
+  ProductosCarrito: Producto[];
+  relacionados: Producto[];
+  relacionadosFotos: Producto[];
+  constructor(private load: LoadingService, private route: ActivatedRoute,
+    private apiS: ApiService, private navCtrl: NavController,
+    private authS: AuthService, public loadingController: LoadingController, private storage: NativeStorage) { }
 
   async ngOnInit() {
- 
-      this.carga();
-     
- 
- console.log(this.relacionadosFotos);
-  }
-  async carga(){
-this.isAuth=this.authS.isAuthenticated();
-    if(this.authS.isAuthenticated()){
-      this.usuario = await this.storage.getItem("userApi");
-      this.Usuario=await  this.apiS.getUserId(this.usuario.id);
-      this.cart=await this.storage.getItem("cart");
-     
-     
-        this.cart=await this.storage.getItem("cart");
-        this.ProductosCarrito=this.cart.productos;
-      
-        this.nProductosCart=this.cart.productos.length;
-     
-      console.log(this.cart);
-   if(this.cart.productos){
-    this.ProductosCarrito=this.cart.productos;
-   }else{
-    this.ProductosCarrito=[];
-   }
-    
-    
-  
-      
 
-      console.log(this.Usuario);
-    }else{
-      
-        console.log("no hay usuario");
-        this.nProductosCart=0;
-      
-      console.log("no hay usuario");
+    this.carga();
+
+
+    console.log(this.relacionadosFotos);
+  }
+
+
+
+  /**
+* Metodo que carga el producto 
+
+* @param  Product  Producto que se va a cargar
+*/
+  async carga() {
+    let id = this.route.snapshot.paramMap.get('id');
+    this.load.presentLoading();
+    this.product = await this.apiS.getProductoId(id);
+    this.productsinfoto = await this.apiS.getProductoId(id);
+
+    if (this.product) {
+      if (this.product.imagene1 == null) {
+      } else {
+        this.product.imagene1 = 'data:image/jpeg;base64,' + this.product.imagene1;
+
+      }
+      if (this.product.imagene2 == null) {
+
+      } else {
+        this.product.imagene2 = 'data:image/jpeg;base64,' + this.product.imagene2;
+
+      }
+      if (this.product.imagene3 == null) {
+
+      } else {
+        this.product.imagene3 = 'data:image/jpeg;base64,' + this.product.imagene3;
+      }
     }
-    
-  let id = this.route.snapshot.paramMap.get('id');
-  this.product=await this.apiS.getProductoId(id);
-  this.productsinfoto=await this.apiS.getProductoId(id);
- 
-  if(this.product){
-   if(this.product.imagene1==null){
-          
-      
-   }else{
-     this.product.imagene1='data:image/jpeg;base64,'+this.product.imagene1;
-   
-   
-   }
-   if(this.product.imagene2==null){
-    
-   
-   }else{
-     this.product.imagene2='data:image/jpeg;base64,'+this.product.imagene2;
-   
-   
-   }
-   if(this.product.imagene3==null){
-   
-  
-   }else{
-     this.product.imagene3='data:image/jpeg;base64,'+this.product.imagene3;
-  
- 
-   }
-  }
-  
-   console.log(this.product);
+    console.log(this.product);
+    this.category = this.product.categoria;
+    this.relacionadosFotos = [];
 
-   this.category=  this.product.categoria;
-  this.relacionadosFotos= [] ;
- 
-  
-    this.relacionados=await this.apiS.getProductall();
-   
-    this.relacionados.forEach((data)=>{
-  
-      if(data.categoria==this.category && data.id!=this.product.id){
-        
-        if(data.imagene1==null){
-          data.imagene1="/assets/IMG/pordefecto.jpg";
-     
-        }else{
-         data.imagene1='data:image/jpeg;base64,'+data.imagene1;
-         console.log(data);
-        
+    this.relacionados = await this.apiS.getProductall();
+
+    this.relacionados.forEach((data) => {
+
+      if (data.categoria == this.category && data.id != this.product.id) {
+
+        if (data.imagene1 == null) {
+          data.imagene1 = "/assets/IMG/pordefecto.jpg";
+        } else {
+          data.imagene1 = 'data:image/jpeg;base64,' + data.imagene1;
+          console.log(data);
         }
-        if(data.imagene2==null){
-          data.imagene2="/assets/IMG/pordefecto.jpg";
-        
-        }else{
-         data.imagene2='data:image/jpeg;base64,'+data.imagene2;
-         console.log(data);
-        
+        if (data.imagene2 == null) {
+          data.imagene2 = "/assets/IMG/pordefecto.jpg";
+        } else {
+          data.imagene2 = 'data:image/jpeg;base64,' + data.imagene2;
+          console.log(data);
         }
-        if(data.imagene3==null){
-          data.imagene3="/assets/IMG/pordefecto.jpg";
-       
-        }else{
-         data.imagene3='data:image/jpeg;base64,'+data.imagene3;
-         console.log(data);
-      
+        if (data.imagene3 == null) {
+          data.imagene3 = "/assets/IMG/pordefecto.jpg";
+        } else {
+          data.imagene3 = 'data:image/jpeg;base64,' + data.imagene3;
+          console.log(data);
         }
         this.relacionadosFotos.push(data);
-    
-      
       }
-    }) 
-  
-  
-  
-  
+    })
 
-  this.relacionadosFotos.reverse();
-}
-
-
-  async anadiralcarro(){
-   // this.load.presentLoading();
-  //  setTimeout(() => {
-   //   this.load.loadingController.dismiss();
-  //  }, 3000);
- if( this.productsinfoto){
-
-  this.ProductosCarrito.push( this.productsinfoto);
- }
-
-  
-  this.cart={
-    
-      id_cliente: this.Usuario.id,
-      productos:this.ProductosCarrito
-      
+    this.cargado = true;
+    this.load.Dismiss();
+    this.relacionadosFotos.reverse();
+    this.isAuth = this.authS.isAuthenticated();
+    if (this.authS.isAuthenticated()) {
+      this.usuario = await this.storage.getItem("userApi");
+      this.Usuario = await this.apiS.getUserId(this.usuario.id);
+      this.cart = await this.storage.getItem("cart");
+      this.cart = await this.storage.getItem("cart");
+      this.ProductosCarrito = this.cart.productos;
+      this.nProductosCart = this.cart.productos.length;
+      console.log(this.cart);
+      if (this.cart.productos) {
+        this.ProductosCarrito = this.cart.productos;
+      } else {
+        this.ProductosCarrito = [];
+      }
+      console.log(this.Usuario);
+    } else {
+      console.log("no hay usuario");
+      this.nProductosCart = 0;
+      console.log("no hay usuario");
     }
-   
-//guardar en el native storage
-this.load.presentToastSinColor("Añadido exitosamente");
-await this.storage.setItem("cart", this.cart);
+    this.cargado = true;
+  }
 
+  /**
+* Metodo que añade el producto al carrito de compra si esta autenticado el usuario
+* @param  productsinfoto Producto
+* @param  ProductosCArrito  Productos del carrito
+*/
+  async anadiralcarro() {
+    // this.load.presentLoading();
+    //  setTimeout(() => {
+    //   this.load.loadingController.dismiss();
+    //  }, 3000);
+    try {
+      if (this.authS.isAuthenticated()) {
+        if (this.productsinfoto) {
+          this.ProductosCarrito.push(this.productsinfoto);
+          this.cart = {
+            id_cliente: this.Usuario.id,
+            productos: this.ProductosCarrito
+          }
 
-  
-}
+          //guardar en el native storage
+          this.load.presentToastSinColor("Añadido exitosamente");
+          await this.storage.setItem("cart", this.cart);
+        }
+      } else {
+        this.load.presentToastSinColor("Debes iniciar sesion para comprar")
+      }
+    } catch (err) {
+      this.load.presentToastSinColor("Debes iniciar sesion para comprar")
+    }
 
- 
-doRefresh(event) {
-  setTimeout(async () => {
- this.carga();
+  }
 
- console.log(this.relacionadosFotos);
-    event.target.complete();
-  }, 500);
-}
+  //Refrescar la pagina
+  doRefresh(event) {
+    setTimeout(async () => {
+      this.carga();
+
+      console.log(this.relacionadosFotos);
+      event.target.complete();
+    }, 500);
+  }
+
+  //BackButton
   public atras() {
     this.navCtrl.back();
+  }
+
+  //toast Carrito de compra
+  ToastCarrito() {
+    this.load.presentToastSinColor("Para utilizar las funciones de compra inicie sesion en la pestaña 'Perfil'")
   }
 }

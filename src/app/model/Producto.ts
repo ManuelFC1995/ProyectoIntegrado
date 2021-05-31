@@ -7,6 +7,7 @@ export interface Producto {
     talla?: string;
     descripcion?: string;
     categoria?: string;
+    categoria2?: string;
     sexo?: boolean;
     precio?: number;
     imagene1?: string | Text;

@@ -1,6 +1,8 @@
 import { Cliente } from "./Cliente";
 import { Producto } from "./Producto";
 
+
+
 export interface Pedido {
     id?: string | number;
     fecha_compra?: Date;
@@ -17,7 +19,7 @@ export interface Pedido {
    metedoPago?:string;
    numero_cuenta?:number;
    nombre_comprador?:string;
-   codigo_Comprador?:string;
+   codigo_Comprador?:string | number;
    email?:string;
    productos?: Producto[];
    comprador:Cliente;
