@@ -42,7 +42,12 @@
     }
 
 }
-
+.loading-wrapper{
+    --spinner-color:rgb(96, 167, 226);
+    background:transparent !important;
+    -webkit-box-shadow:none !important;
+    
+    }
 .yourclass {
     .toast-wrapper {
       margin-top: 40px;

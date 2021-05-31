@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
  
-  endpoint:'http://localhost:8100/',
+  endpoint:'https://proyectointegrado.herokuapp.com/',
   apiUsers:"Users/",
   apiPedidos:"Pedidos/",
   apiProductos:"Productos/",
